@@ -1,30 +1,23 @@
 import 'package:flutter/material.dart';
 
 class RoundedButton extends StatelessWidget {
-  final String buttonText;
-  final double buttonSize;
-  final Colors funcButtonColor;
-  final Function mathOperaton;
+  final String buttonName;
+  final Function buttonFunction;
 
-  const RoundedButton(
-      {this.buttonText,
-      this.buttonSize,
-      this.funcButtonColor,
-      this.mathOperaton});
+  const RoundedButton({this.buttonName, this.buttonFunction});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: 80.0,
-      child: ElevatedButton(
-        style: ButtonStyle(),
-        onPressed: () {},
-        child: Padding(
-          padding: EdgeInsets.all(12.0),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(minHeight: 71.0),
+        child: ElevatedButton(
+          onPressed: buttonFunction,
           child: Text(
-            buttonText,
+            buttonName,
             style: TextStyle(
-              fontSize: 40.0,
+              fontSize: buttonName == 'CA' ? 35 : 40,
             ),
           ),
         ),

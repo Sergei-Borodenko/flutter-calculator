@@ -1,11 +1,22 @@
 import 'package:flutter/material.dart';
 import 'rounded_button.dart';
+import 'package:math_expressions/math_expressions.dart';
+import 'constans.dart';
 
 void main() {
   runApp(CalculatorApp());
 }
 
-class CalculatorApp extends StatelessWidget {
+class CalculatorApp extends StatefulWidget {
+  @override
+  _CalculatorAppState createState() => _CalculatorAppState();
+}
+
+class _CalculatorAppState extends State<CalculatorApp> {
+  String calculatedText = ' ';
+  String previousCalculatedText = ' ';
+  Parser p = Parser();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -28,12 +39,19 @@ class CalculatorApp extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 18.0),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Text('previous operation'),
                       Text(
-                        'previous operation',
-                        style: TextStyle(),
+                        previousCalculatedText,
+                        style:
+                            TextStyle(fontSize: 20.0, color: Colors.blueGrey),
+                      ),
+                      SizedBox(height: 10.0),
+                      Text(
+                        calculatedText,
+                        style: TextStyle(
+                            fontSize: calculatedText.length < 10 ? 50 : 30),
                       ),
                       Divider(
                         thickness: 1,
@@ -47,91 +65,50 @@ class CalculatorApp extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        RoundedButton(
-                          buttonText: 'AC',
+                    for (var i = 0; i < rowList.length; i++)
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            for (var item in rowList[i].entries)
+                              RoundedButton(
+                                buttonName: item.key,
+                                buttonFunction: () {
+                                  var myFanc = item.value;
+                                  setState(
+                                    () {
+                                      if (item.key == '=') {
+                                        String result =
+                                            myFanc(calculatedText, p);
+                                        if (result != 'bad expression') {
+                                          previousCalculatedText =
+                                              calculatedText;
+                                          calculatedText = result;
+                                        }
+                                      } else if (item.key == 'CA') {
+                                        previousCalculatedText = ' ';
+                                        calculatedText =
+                                            myFanc(calculatedText, item.key);
+                                      } else if (calculatedText.length > 50) {
+                                        if (item.key == 'C' ||
+                                            item.key == '<') {
+                                          calculatedText =
+                                              myFanc(calculatedText, item.key);
+                                        } else {
+                                          //TODO show message "too many symbols"
+                                        }
+                                      } else {
+                                        calculatedText =
+                                            myFanc(calculatedText, item.key);
+                                      }
+                                    },
+                                  );
+                                },
+                              )
+                          ],
                         ),
-                        RoundedButton(
-                          buttonText: 'C',
-                        ),
-                        RoundedButton(
-                          buttonText: '%',
-                        ),
-                        RoundedButton(
-                          buttonText: '÷',
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        RoundedButton(
-                          buttonText: '7',
-                        ),
-                        RoundedButton(
-                          buttonText: '8',
-                        ),
-                        RoundedButton(
-                          buttonText: '9',
-                        ),
-                        RoundedButton(
-                          buttonText: '×',
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        RoundedButton(
-                          buttonText: '4',
-                        ),
-                        RoundedButton(
-                          buttonText: '5',
-                        ),
-                        RoundedButton(
-                          buttonText: '6',
-                        ),
-                        RoundedButton(
-                          buttonText: '-',
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        RoundedButton(
-                          buttonText: '1',
-                        ),
-                        RoundedButton(
-                          buttonText: '2',
-                        ),
-                        RoundedButton(
-                          buttonText: '3',
-                        ),
-                        RoundedButton(
-                          buttonText: '+',
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        RoundedButton(
-                          buttonText: '+/-',
-                        ),
-                        RoundedButton(
-                          buttonText: '0',
-                        ),
-                        RoundedButton(
-                          buttonText: '.',
-                        ),
-                        RoundedButton(
-                          buttonText: '=',
-                        ),
-                      ],
-                    ),
+                      ),
                   ],
                 ),
               ),
