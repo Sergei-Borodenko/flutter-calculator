@@ -17,7 +17,7 @@ Map buttonNames1 = <String, Function>{
   '7': addChar,
   '8': addChar,
   '9': addChar,
-  '×': checkIsCharAndAdd,
+  '*': checkIsCharAndAdd,
 };
 Map buttonNames2 = <String, Function>{
   '4': addChar,
