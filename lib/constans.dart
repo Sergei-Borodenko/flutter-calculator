@@ -1,7 +1,6 @@
 import 'package:math_expressions/math_expressions.dart';
-import 'package:flutter/material.dart';
 
-RegExp regExp = RegExp("[+-/*]");
+RegExp regExp = RegExp("[+-/×]");
 RegExp regExp2 = RegExp("[()]");
 Function addChar = (String s, String s2) => s += s2;
 Function checkIsCharAndAdd =
@@ -17,7 +16,7 @@ Map buttonNames1 = <String, Function>{
   '7': addChar,
   '8': addChar,
   '9': addChar,
-  '*': checkIsCharAndAdd,
+  '×': checkIsCharAndAdd,
 };
 Map buttonNames2 = <String, Function>{
   '4': addChar,
@@ -55,10 +54,16 @@ Map buttonNames4 = <String, Function>{
   '=': (String s, var b) {
     try {
       ContextModel cm = ContextModel();
-      Expression exp = b.parse(s);
+      print(s);
+      String s2 = s.replaceAllMapped(RegExp('[0-9][(]'),
+          (match) => "${match.group(0)[0]}×${match.group(0)[1]}");
+      print(s2);
+      String s3 = s2.replaceAll('×', '*');
+      print(s3);
+      Expression exp = b.parse(s3);
       double eval = exp.evaluate(EvaluationType.REAL, cm);
-      s = eval.toString();
-      return s;
+      s3 = eval.toString();
+      return s3;
     } catch (e) {
       print(e);
       //TODO show massage 'bad expression'

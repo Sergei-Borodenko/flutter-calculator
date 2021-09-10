@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'rounded_button.dart';
 import 'package:math_expressions/math_expressions.dart';
 import 'constans.dart';
+import 'theme_provider.dart';
 
 void main() {
   runApp(CalculatorApp());
@@ -16,22 +17,41 @@ class _CalculatorAppState extends State<CalculatorApp> {
   String calculatedText = ' ';
   String previousCalculatedText = ' ';
   Parser p = Parser();
+  bool isDarkTheme = false;
+  ThemeProvider customTheme = ThemeProvider();
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            primary: Colors.teal[100],
-            shape: CircleBorder(),
-            padding: EdgeInsets.all(0),
-          ),
-        ),
-      ),
+      theme: isDarkTheme ? customTheme.dark : customTheme.light,
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        backgroundColor: Colors.blueGrey[100],
+        appBar: AppBar(
+          centerTitle: false,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(
+                'Theme mode',
+                style: TextStyle(
+                    color: !isDarkTheme ? Colors.blueGrey : Colors.white),
+              ),
+            ],
+          ),
+          backgroundColor: Colors.transparent,
+          elevation: 0.0,
+          actions: [
+            Switch(
+                activeColor: Colors.teal[100],
+                activeTrackColor: Colors.teal[500],
+                value: isDarkTheme,
+                onChanged: (value) {
+                  setState(() {
+                    isDarkTheme = !isDarkTheme;
+                  });
+                }),
+          ],
+        ),
         body: SafeArea(
           child: Column(
             children: [
@@ -44,16 +64,21 @@ class _CalculatorAppState extends State<CalculatorApp> {
                     children: [
                       Text(
                         previousCalculatedText,
-                        style:
-                            TextStyle(fontSize: 20.0, color: Colors.blueGrey),
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          color: isDarkTheme ? Colors.white : Colors.blueGrey,
+                        ),
                       ),
                       SizedBox(height: 10.0),
                       Text(
                         calculatedText,
                         style: TextStyle(
-                            fontSize: calculatedText.length < 10 ? 50 : 30),
+                            fontSize: calculatedText.length < 10 ? 50 : 30,
+                            color:
+                                isDarkTheme ? Colors.white : Colors.blueGrey),
                       ),
                       Divider(
+                        color: isDarkTheme ? Colors.white : Colors.blueGrey,
                         thickness: 1,
                       )
                     ],
@@ -73,6 +98,7 @@ class _CalculatorAppState extends State<CalculatorApp> {
                           children: [
                             for (var item in rowList[i].entries)
                               RoundedButton(
+                                isDarkTheme: isDarkTheme,
                                 buttonName: item.key,
                                 buttonFunction: () {
                                   var myFanc = item.value;
